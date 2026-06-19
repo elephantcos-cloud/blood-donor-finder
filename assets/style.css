@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;700&family=Noto+Sans+Bengali:wght@400;600&display=swap');
+
+:root {
+    --red: #C81D33;
+    --red-dark: #931225;
+    --green: #2F9E58;
+    --ink: #241B1D;
+    --muted: #6B5B5E;
+    --bg: #FFF8F6;
+    --card: #FFFFFF;
+    --border: #F0DDD9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans Bengali', sans-serif;
+    line-height: 1.6;
+}
+
+h1, h2, h3, .brand {
+    font-family: 'Baloo Da 2', sans-serif;
+}
+
+a { color: var(--red); text-decoration: none; }
+a:hover { color: var(--red-dark); }
+
+.topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.brand {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand .drop {
+    width: 14px;
+    height: 18px;
+    background: var(--red);
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    display: inline-block;
+}
+
+.nav a {
+    margin-left: 16px;
+    color: var(--ink);
+    font-weight: 600;
+}
+.nav a:hover { color: var(--red); }
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+}
+
+.hero {
+    text-align: center;
+    padding: 30px 10px 10px;
+}
+.hero h1 { font-size: 28px; margin-bottom: 6px; }
+.hero p { color: var(--muted); margin-top: 0; }
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(200, 29, 51, 0.06);
+}
+
+.card + .card { margin-top: 20px; }
+
+label {
+    display: block;
+    font-weight: 600;
+    margin: 14px 0 6px;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    background: #fff;
+}
+input:focus, select:focus {
+    outline: 2px solid var(--red);
+    outline-offset: 1px;
+}
+
+.btn {
+    display: inline-block;
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 18px;
+}
+.btn:hover { background: var(--red-dark); }
+
+.btn-outline {
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+}
+.btn-outline:hover { background: var(--red); color: #fff; }
+
+.row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.donor-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bg-badge {
+    background: var(--red);
+    color: #fff;
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.available {
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.muted { color: var(--muted); font-size: 14px; }
+
+.alert {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+.alert-error { background: #FCE4E6; color: var(--red-dark); }
+.alert-success { background: #E4F5EA; color: #1E6B3B; }
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 30px 0;
+}
+
+@media (max-width: 480px) {
+    .row2 { grid-template-columns: 1fr; }
+}
+
+/* ===== Phase 2 অ্যাডিশনাল স্টাইল ===== */
+
+.nav-emergency {
+    background: var(--red);
+    color: #fff !important;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+.nav-emergency:hover { background: var(--red-dark); }
+
+.footer-links { margin-bottom: 8px; font-size: 13px; }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--red); }
+
+/* Hero সেকশনে এক্সট্রা বাটন */
+.hero-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+.hero-actions .btn { width: auto; padding: 11px 22px; margin-top: 0; }
+
+/* স্ট্যাট গ্রিড */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+.stat-num { font-size: 26px; font-weight: 700; color: var(--red); font-family: 'Baloo Da 2', sans-serif; }
+.stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* ব্লাড গ্রুপ পরিসংখ্যান */
+.bg-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.bg-stat-pill {
+    background: #FCE4E6;
+    color: var(--red-dark);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Compatibility chart */
+.compat-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+.compat-table th, .compat-table td { border: 1px solid var(--border); padding: 8px 4px; text-align: center; }
+.compat-table th { background: #FCE4E6; color: var(--red-dark); }
+
+/* Urgency badges */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.badge-normal { background: #E4F5EA; color: #1E6B3B; }
+.badge-urgent { background: #FFF3CD; color: #8A6500; }
+.badge-critical { background: #FCE4E6; color: var(--red-dark); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* Progress bar (অস্থায়ী অনুপলব্ধতা) */
+.progress-wrap { background: #F0DDD9; border-radius: 20px; height: 10px; overflow: hidden; margin-top: 8px; }
+.progress-bar { background: var(--green); height: 100%; border-radius: 20px; }
+.progress-bar.cooldown { background: var(--red); }
+
+.unavailable-tag { color: var(--muted); font-style: italic; font-size: 13px; }
+
+/* ব্লাড কার্ড */
+.blood-card {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: #fff;
+    border-radius: 16px;
+    padding: 22px;
+    max-width: 380px;
+    margin: 0 auto;
+    position: relative;
+}
+.blood-card h3 { margin: 0 0 4px; font-size: 20px; }
+.blood-card .bc-id { font-size: 12px; opacity: 0.85; letter-spacing: 1px; }
+.blood-card .bc-bg { font-size: 36px; font-weight: 700; font-family: 'Baloo Da 2', sans-serif; margin: 10px 0; }
+.blood-card .bc-row { display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; opacity: 0.95; }
+.blood-card .bc-qr { background: #fff; padding: 8px; border-radius: 8px; display: inline-block; margin-top: 12px; }
+
+/* হাসপাতাল/অ্যাম্বুলেন্স লিস্ট */
+.list-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+}
+.list-item h4 { margin: 0 0 4px; font-size: 16px; }
+.list-item .meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* অ্যাডমিন টেবিল */
+.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 14px; }
+.admin-table th, .admin-table td { border: 1px solid var(--border); padding: 8px; text-align: left; }
+.admin-table th { background: #FCE4E6; color: var(--red-dark); }
+.admin-table .actions a { margin-right: 8px; font-size: 12px; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tabs a { padding: 8px 14px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); font-size: 14px; }
+.tabs a.active { background: var(--red); color: #fff; }
+
+@media (max-width: 480px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .admin-table { display: block; overflow-x: auto; white-space: nowrap; }
+}

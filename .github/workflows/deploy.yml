@@ -1,0 +1,36 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate config.php from secrets
+        run: |
+          sed -e "s/{{DB_HOST}}/${{ secrets.DB_HOST }}/g" \
+              -e "s/{{DB_NAME}}/${{ secrets.DB_NAME }}/g" \
+              -e "s/{{DB_USER}}/${{ secrets.DB_USER }}/g" \
+              -e "s/{{DB_PASS}}/${{ secrets.DB_PASS }}/g" \
+              config.php.template > config.php
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ./htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            config.php.template
+            database.sql
+            README.md
