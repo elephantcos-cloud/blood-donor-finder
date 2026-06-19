@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
                     );
                     $stmt->bind_param(
-                        "ssssssssssssdss",
+                        "sssssssssssssdss",
                         $name, $photo_path, $phone, $whatsapp, $hashed, $blood_group,
                         $division, $district, $upazila, $address, $dob, $gender,
                         $occupation, $weight, $emergency_contact, $public_id

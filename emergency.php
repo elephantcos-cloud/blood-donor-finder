@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "INSERT INTO emergency_requests (patient_name, hospital_name, blood_group, bags_needed, contact_number, division, district, upazila, urgency_level, status)
                  VALUES (?,?,?,?,?,?,?,?,?, 'active')"
             );
-            $stmt->bind_param("sssissss", $patient_name, $hospital_name, $blood_group, $bags_needed, $contact_number, $division, $district, $upazila, $urgency_level);
+            $stmt->bind_param("sssisssss", $patient_name, $hospital_name, $blood_group, $bags_needed, $contact_number, $division, $district, $upazila, $urgency_level);
             if ($stmt->execute()) {
                 $success = "রিকোয়েস্ট পোস্ট হয়েছে। দ্রুত সাড়া পেতে আশেপাশের রক্তবন্ধুদের সাথেও সরাসরি যোগাযোগ করো।";
                 $show_form = false;
