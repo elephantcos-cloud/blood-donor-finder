@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/config.php';
 require __DIR__ . '/includes/locations.php';
+require __DIR__ . '/includes/icons.php';
+require __DIR__ . '/includes/avatar.php';
 
 if (!isset($_SESSION['donor_id'])) {
     redirect('/login.php');
@@ -32,16 +34,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify()) {
     $emergency_contact = trim($_POST['emergency_contact'] ?? '');
     if ($weight === '') $weight = null;
 
-    $stmt = $conn->prepare(
-        "UPDATE donors SET blood_group=?, division=?, district=?, upazila=?, address=?, whatsapp=?, occupation=?, weight_kg=?, emergency_contact=? WHERE id=?"
-    );
-    $stmt->bind_param("sssssssdsi", $blood_group, $division, $district, $upazila, $address, $whatsapp, $occupation, $weight, $emergency_contact, $donor_id);
-    if ($stmt->execute()) {
-        $success = "প্রোফাইল আপডেট হয়েছে।";
-    } else {
-        $error = "আপডেট করা যায়নি, আবার চেষ্টা করুন।";
+    // ---------- প্রোফাইল ছবি আপডেট (ঐচ্ছিক) ----------
+    $photo_sql = '';
+    $new_photo_path = null;
+    if (!empty($_FILES['photo']['name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
+        $info = @getimagesize($_FILES['photo']['tmp_name']);
+        if ($info !== false && isset($allowed[$info['mime']]) && $_FILES['photo']['size'] <= 2 * 1024 * 1024) {
+            $ext = $allowed[$info['mime']];
+            $filename = bin2hex(random_bytes(12)) . '.' . $ext;
+            $dest = __DIR__ . '/uploads/donor_photos/' . $filename;
+            if (@move_uploaded_file($_FILES['photo']['tmp_name'], $dest)) {
+                $new_photo_path = 'uploads/donor_photos/' . $filename;
+            }
+        } else {
+            $error = "ছবি শুধু JPG/PNG ফরম্যাটে এবং ২MB-এর কম হতে হবে।";
+        }
     }
-    $stmt->close();
+
+    if ($error === '') {
+        if ($new_photo_path !== null) {
+            $stmt = $conn->prepare(
+                "UPDATE donors SET blood_group=?, division=?, district=?, upazila=?, address=?, whatsapp=?, occupation=?, weight_kg=?, emergency_contact=?, photo_path=? WHERE id=?"
+            );
+            $stmt->bind_param("sssssssdssi", $blood_group, $division, $district, $upazila, $address, $whatsapp, $occupation, $weight, $emergency_contact, $new_photo_path, $donor_id);
+        } else {
+            $stmt = $conn->prepare(
+                "UPDATE donors SET blood_group=?, division=?, district=?, upazila=?, address=?, whatsapp=?, occupation=?, weight_kg=?, emergency_contact=? WHERE id=?"
+            );
+            $stmt->bind_param("sssssssdsi", $blood_group, $division, $district, $upazila, $address, $whatsapp, $occupation, $weight, $emergency_contact, $donor_id);
+        }
+        if ($stmt->execute()) {
+            $success = "প্রোফাইল আপডেট হয়েছে।";
+        } else {
+            $error = "আপডেট করা যায়নি, আবার চেষ্টা করুন।";
+        }
+        $stmt->close();
+    }
 }
 
 $stmt = $conn->prepare("SELECT * FROM donors WHERE id = ?");
@@ -57,6 +86,9 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="hero">
+    <div style="display:flex; justify-content:center; margin-bottom:10px;">
+        <?php echo avatar_html($donor['photo_path'] ?? null, $donor['name'], $donor['blood_group'], 72); ?>
+    </div>
     <h1>স্বাগতম, <?php echo htmlspecialchars($donor['name']); ?></h1>
     <p class="muted"><?php echo htmlspecialchars($donor['phone']); ?> &middot; মোট রক্তদান: <?php echo (int)$donor['total_donations']; ?> বার</p>
     <div class="hero-actions">
@@ -85,8 +117,11 @@ require __DIR__ . '/includes/header.php';
 
 <div class="card">
     <h3>প্রোফাইল সম্পাদনা</h3>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <?php echo csrf_field(); ?>
+        <label>প্রোফাইল ছবি পরিবর্তন (ঐচ্ছিক, সর্বোচ্চ ২MB)</label>
+        <input type="file" name="photo" accept="image/jpeg,image/png">
+
         <div class="row2">
             <div>
                 <label>ব্লাড গ্রুপ</label>

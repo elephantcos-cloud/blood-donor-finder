@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/config.php';
 require __DIR__ . '/includes/locations.php';
+require __DIR__ . '/includes/icons.php';
+require __DIR__ . '/includes/lang.php';
 
 $page_title = "জরুরি রক্ত - রক্তবন্ধন";
 $success = '';
@@ -57,11 +59,14 @@ $requests = $conn->query(
 require __DIR__ . '/includes/header.php';
 ?>
 
-<div class="hero">
-    <h1>জরুরি রক্ত রিকোয়েস্ট</h1>
-    <p>রক্তের প্রয়োজন? নিচে পোস্ট করো, অথবা চলমান রিকোয়েস্টে সাড়া দাও</p>
-    <div class="hero-actions">
-        <a href="/emergency.php?new=1" class="btn">নতুন রিকোয়েস্ট পোস্ট করো</a>
+<div class="hero-banner" style="background: linear-gradient(135deg, #1a1014 0%, #2b171c 60%, #5c1a1a 100%);">
+    <div class="hero-banner-inner">
+        <div class="hero-pill"><?php echo icon('siren', 'ic-sm'); ?> <?php echo htmlspecialchars(t('emg_badge')); ?></div>
+        <h1><?php echo htmlspecialchars(t('emg_title')); ?></h1>
+        <p><?php echo htmlspecialchars(t('emg_sub')); ?></p>
+        <div class="hero-actions-row">
+            <a href="/emergency.php?new=1" class="hero-btn-light"><?php echo icon('plus', 'ic-sm'); ?><?php echo htmlspecialchars(t('emg_post_btn')); ?></a>
+        </div>
     </div>
 </div>
 
@@ -112,19 +117,24 @@ require __DIR__ . '/includes/header.php';
 <?php endif; ?>
 
 <div class="card">
-    <h3>সক্রিয় রিকোয়েস্ট (<?php echo $requests->num_rows; ?>)</h3>
+    <h3><?php echo icon('siren', 'ic-sm'); ?> <?php echo htmlspecialchars(t('emg_active_title')); ?> (<?php echo $requests->num_rows; ?>)</h3>
     <?php if ($requests->num_rows === 0): ?>
-        <p class="muted">এখন কোনো সক্রিয় জরুরি রিকোয়েস্ট নেই।</p>
+        <p class="muted"><?php echo htmlspecialchars(t('emg_none')); ?></p>
     <?php else: ?>
-        <?php while ($r = $requests->fetch_assoc()): ?>
+        <?php while ($r = $requests->fetch_assoc()):
+            $wa_digits = preg_replace('/[^0-9]/', '', $r['contact_number']);
+            if (substr($wa_digits, 0, 2) === '01') $wa_digits = '880' . substr($wa_digits, 1);
+            $wa_text = rawurlencode('হ্যালো, রক্তবন্ধন থেকে দেখলাম ' . $r['hospital_name'] . ' হাসপাতালে ' . $r['blood_group'] . ' রক্ত দরকার। আমি সাহায্য করতে পারি।');
+        ?>
             <div class="list-item">
                 <h4><?php echo htmlspecialchars($r['patient_name']); ?> <span class="bg-badge"><?php echo $r['blood_group']; ?></span>
                     <span class="badge badge-<?php echo $r['urgency_level']; ?>"><?php echo ['normal'=>'সাধারণ','urgent'=>'জরুরি','critical'=>'খুবই জরুরি'][$r['urgency_level']]; ?></span>
                 </h4>
-                <div class="meta">🏥 <?php echo htmlspecialchars($r['hospital_name']); ?> &middot; <?php echo htmlspecialchars($r['district']); ?><?php echo $r['upazila'] ? ', ' . htmlspecialchars($r['upazila']) : ''; ?></div>
-                <div class="meta"><?php echo (int)$r['bags_needed']; ?> ব্যাগ প্রয়োজন</div>
-                <div style="margin-top:8px;">
-                    <a href="tel:<?php echo htmlspecialchars($r['contact_number']); ?>" class="btn btn-outline" style="width:auto; padding:8px 16px;">কল করো</a>
+                <div class="meta"><?php echo icon('hospital', 'ic-xs'); ?> <?php echo htmlspecialchars($r['hospital_name']); ?> &middot; <?php echo htmlspecialchars($r['district']); ?><?php echo $r['upazila'] ? ', ' . htmlspecialchars($r['upazila']) : ''; ?></div>
+                <div class="meta"><?php echo (int)$r['bags_needed']; ?> <?php echo htmlspecialchars(t('emg_bags')); ?></div>
+                <div class="dc-actions" style="margin-top:8px;">
+                    <a href="tel:<?php echo htmlspecialchars($r['contact_number']); ?>" class="dc-btn dc-btn-call"><?php echo icon('phone', 'ic-sm'); ?><?php echo htmlspecialchars(t('btn_call')); ?></a>
+                    <a href="https://wa.me/<?php echo $wa_digits; ?>?text=<?php echo $wa_text; ?>" target="_blank" class="dc-btn dc-btn-wa"><?php echo icon('chat', 'ic-sm'); ?><?php echo htmlspecialchars(t('btn_whatsapp')); ?></a>
                 </div>
             </div>
         <?php endwhile; ?>

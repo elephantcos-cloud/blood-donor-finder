@@ -41,17 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "এই মোবাইল নম্বর দিয়ে আগেই রেজিস্ট্রেশন করা হয়েছে। লগইন করুন।";
             } else {
                 // ---------- প্রোফাইল ছবি আপলোড (ঐচ্ছিক) ----------
+                // getimagesize() ব্যবহার করা হয়েছে finfo এর বদলে, কারণ কিছু ফ্রি হোস্টিং-এ
+                // fileinfo এক্সটেনশন বন্ধ থাকে এবং finfo_open() কল করলে সাইট ক্র্যাশ করত।
                 $photo_path = null;
                 if (!empty($_FILES['photo']['name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
                     $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
-                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                    $mime = finfo_file($finfo, $_FILES['photo']['tmp_name']);
-                    finfo_close($finfo);
-                    if (isset($allowed[$mime]) && $_FILES['photo']['size'] <= 2 * 1024 * 1024) {
-                        $ext = $allowed[$mime];
+                    $info = @getimagesize($_FILES['photo']['tmp_name']);
+                    if ($info !== false && isset($allowed[$info['mime']]) && $_FILES['photo']['size'] <= 2 * 1024 * 1024) {
+                        $ext = $allowed[$info['mime']];
                         $filename = bin2hex(random_bytes(12)) . '.' . $ext;
                         $dest = __DIR__ . '/uploads/donor_photos/' . $filename;
-                        if (move_uploaded_file($_FILES['photo']['tmp_name'], $dest)) {
+                        if (@move_uploaded_file($_FILES['photo']['tmp_name'], $dest)) {
                             $photo_path = 'uploads/donor_photos/' . $filename;
                         }
                     } else {
