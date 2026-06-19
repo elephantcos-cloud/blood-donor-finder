@@ -5,6 +5,11 @@
  * stroke="currentColor" ব্যবহার করা হয়েছে, তাই CSS color দিয়ে রং নিয়ন্ত্রণ করা যায়।
  */
 function icon(string $name, string $class = 'ic'): string {
+    // CSS দেরিতে লোড হলে বা cache সমস্যা হলেও যাতে আইকন বিশাল হয়ে না যায়,
+    // তাই সাইজ সরাসরি SVG-এর width/height অ্যাট্রিবিউটেও বসিয়ে দেওয়া হলো (শুধু CSS class-এর ভরসায় না থেকে)।
+    $sizes = ['ic-xs' => 13, 'ic-sm' => 16, 'ic' => 20, 'ic-md' => 22, 'ic-lg' => 30];
+    $px = $sizes[$class] ?? 20;
+
     $body = '';
     switch ($name) {
         case 'droplet':
@@ -106,5 +111,5 @@ function icon(string $name, string $class = 'ic'): string {
         default:
             $body = '<circle cx="12" cy="12" r="8.5"/>';
     }
-    return '<svg class="' . htmlspecialchars($class) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $body . '</svg>';
+    return '<svg class="' . htmlspecialchars($class) . '" width="' . $px . '" height="' . $px . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:inline-block;vertical-align:middle;" aria-hidden="true">' . $body . '</svg>';
 }
