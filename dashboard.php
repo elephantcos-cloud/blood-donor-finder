@@ -22,6 +22,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify()) {
     $stmt->execute();
     $stmt->close();
     $success = "অভিনন্দন! রক্তদানের তথ্য আপডেট হয়েছে। তোমার পরবর্তী ১২০ দিন বিরতি শুরু হলো।";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_account') {
+    // ---------- অ্যাকাউন্ট স্থায়ীভাবে ডিলিট — নিরাপত্তার জন্য পাসওয়ার্ড আবার যাচাই করা হয় ----------
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    $stmt = $conn->prepare("SELECT password, photo_path FROM donors WHERE id = ?");
+    $stmt->bind_param("i", $donor_id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($row && password_verify($confirm_password, $row['password'])) {
+        if (!empty($row['photo_path'])) {
+            @unlink(__DIR__ . '/' . $row['photo_path']);
+        }
+        $del = $conn->prepare("DELETE FROM donors WHERE id = ?");
+        $del->bind_param("i", $donor_id);
+        $del->execute();
+        $del->close();
+        session_destroy();
+        redirect('/index.php?account_deleted=1');
+    } else {
+        $error = "পাসওয়ার্ড মিলছে না, অ্যাকাউন্ট ডিলিট করা যায়নি।";
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $blood_group = $_POST['blood_group'] ?? '';
     $division = $_POST['division'] ?? '';
@@ -93,6 +115,7 @@ require __DIR__ . '/includes/header.php';
     <p class="muted"><?php echo htmlspecialchars($donor['phone']); ?> &middot; মোট রক্তদান: <?php echo (int)$donor['total_donations']; ?> বার</p>
     <div class="hero-actions">
         <a href="/blood-card.php" class="btn">আমার ব্লাড কার্ড দেখো</a>
+        <a href="/logout.php" class="btn btn-outline"><?php echo icon('logout', 'ic-sm'); ?> লগ-আউট</a>
     </div>
 </div>
 
@@ -162,6 +185,18 @@ require __DIR__ . '/includes/header.php';
         <input type="text" name="emergency_contact" value="<?php echo htmlspecialchars($donor['emergency_contact'] ?? ''); ?>">
 
         <button type="submit" class="btn">আপডেট করুন</button>
+    </form>
+</div>
+
+<div class="card" style="border-color:#F0C7C7;">
+    <h3 style="color:var(--red-dark);"><?php echo icon('trash', 'ic-sm'); ?> অ্যাকাউন্ট ডিলিট করো</h3>
+    <p class="muted">এটা স্থায়ী — ডিলিট করলে তোমার সব তথ্য (প্রোফাইল, রক্তদানের হিস্টোরি) চিরতরে মুছে যাবে, ফিরিয়ে আনা যাবে না।</p>
+    <form method="post" onsubmit="return confirm('তুমি কি নিশ্চিত? এই অ্যাকাউন্ট স্থায়ীভাবে ডিলিট হয়ে যাবে।');">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="action" value="delete_account">
+        <label>নিশ্চিত করতে তোমার পাসওয়ার্ড দাও</label>
+        <input type="password" name="confirm_password" required>
+        <button type="submit" class="btn" style="background:var(--red-dark);">অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করো</button>
     </form>
 </div>
 

@@ -475,4 +475,6 @@ html.dark .icon-sun { display: inline-flex; }
     .bottom-nav a.active { color: var(--red); }
     body { padding-bottom: 70px; }
     .share-fab { bottom: 76px; }
+    /* বটম-ন্যাভে যা আছে, টপ-প্যানেলে সেগুলো আর দেখাবে না — প্যানেল ছোট রাখার জন্য */
+    .topbar .nav-dup { display: none; }
 }

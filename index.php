@@ -19,6 +19,10 @@ $blood_groups_display = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 require __DIR__ . '/includes/header.php';
 ?>
 
+<?php if (isset($_GET['account_deleted'])): ?>
+    <div class="alert alert-success" style="max-width:680px;margin:0 auto 16px;">তোমার অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করা হয়েছে। আবার ফিরে আসতে চাইলে যেকোনো সময় নতুন করে রেজিস্ট্রেশন করতে পারো।</div>
+<?php endif; ?>
+
 <div class="hero-banner">
     <div class="hero-banner-inner">
         <div class="hero-pill"><?php echo icon('droplet', 'ic-sm'); ?> <?php echo htmlspecialchars(t('hero_badge')); ?></div>
